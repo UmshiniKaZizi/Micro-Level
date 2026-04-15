@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Sword : MonoBehaviour, IWeapon
 {
@@ -19,7 +20,7 @@ public class Sword : MonoBehaviour, IWeapon
     }
 
     private void Start() {
-       // weaponCollider = PlayerController.Instance.GetWeaponCollider();
+        weaponCollider = PlayerController.Instance.GetWeaponCollider();
         slashAnimSpawnPoint = GameObject.Find("SlashSpawnPoint").transform;
     }
 
@@ -46,32 +47,39 @@ public class Sword : MonoBehaviour, IWeapon
     public void SwingUpFlipAnimEvent() {
         slashAnim.gameObject.transform.rotation = Quaternion.Euler(-180, 0, 0);
 
-       /* if (PlayerController.Instance.FacingLeft) { 
+        if (PlayerController.Instance.FacingLeft) { 
             slashAnim.GetComponent<SpriteRenderer>().flipX = true;
-        }*/
+        }
     }
 
     public void SwingDownFlipAnimEvent() {
         slashAnim.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-       /* if (PlayerController.Instance.FacingLeft)
+        if (PlayerController.Instance.FacingLeft)
         {
             slashAnim.GetComponent<SpriteRenderer>().flipX = true;
-        }*/
+        }
     }
 
-    private void MouseFollowWithOffset() {
-        Vector3 mousePos = Input.mousePosition;
-       /* Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(PlayerController.Instance.transform.position);
+   private void MouseFollowWithOffset()
+{
+    if (Camera.main == null || PlayerController.Instance == null) return;
 
-        float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
+    Vector2 mousePos = Mouse.current.position.ReadValue();
+    Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(PlayerController.Instance.transform.position);
 
-        if (mousePos.x < playerScreenPoint.x) {
-            ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, -180, angle);
-            weaponCollider.transform.rotation = Quaternion.Euler(0, -180, 0);
-        } else {
-            ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, 0, angle);
-            weaponCollider.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }*/
+    float angle = Mathf.Atan2(mousePos.y - playerScreenPoint.y, mousePos.x - playerScreenPoint.x) * Mathf.Rad2Deg;
+
+    if (mousePos.x < playerScreenPoint.x)
+    {
+        ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, -180, angle);
+        weaponCollider.transform.rotation = Quaternion.Euler(0, -180, 0);
     }
+    else
+    {
+        ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, 0, angle);
+        weaponCollider.transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+}
+
 }

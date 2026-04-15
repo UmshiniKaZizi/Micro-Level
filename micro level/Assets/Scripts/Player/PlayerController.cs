@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
-{
+{   
+    public static PlayerController Instance { get; private set; }
+
     public bool FacingLeft { get { return facingLeft; } }
 
     [SerializeField] private float moveSpeed = 1f;
@@ -24,13 +26,22 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false;
 
     private void Awake()
+{
+    if (Instance != null && Instance != this)
     {
-        playerControls = new PlayerControls();
-        rb = GetComponent<Rigidbody2D>();
-        myAnimator = GetComponent<Animator>();
-        mySpriteRender = GetComponent<SpriteRenderer>();
-        knockback = GetComponent<Knockback>();
+        Destroy(gameObject);
+        return;
     }
+
+    Instance = this;
+
+    playerControls = new PlayerControls();
+    rb = GetComponent<Rigidbody2D>();
+    myAnimator = GetComponent<Animator>();
+    mySpriteRender = GetComponent<SpriteRenderer>();
+    knockback = GetComponent<Knockback>();
+}
+
 
     private void Start()
     {
