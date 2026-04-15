@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
-public class PlayerController : Singleton<PlayerController>
+public class PlayerController : MonoBehaviour
 {
     public bool FacingLeft { get { return facingLeft; } }
-    
 
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float dashSpeed = 4f;
@@ -23,9 +23,8 @@ public class PlayerController : Singleton<PlayerController>
     private bool facingLeft = false;
     private bool isDashing = false;
 
-    protected override void Awake() {
-        base.Awake();
-
+    private void Awake()
+    {
         playerControls = new PlayerControls();
         rb = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
@@ -33,78 +32,116 @@ public class PlayerController : Singleton<PlayerController>
         knockback = GetComponent<Knockback>();
     }
 
-    private void Start() {
+    private void Start()
+    {
         playerControls.Combat.Dash.performed += _ => Dash();
 
         startingMoveSpeed = moveSpeed;
 
-        ActiveInventory.Instance.EquipStartingWeapon();
+        // Make sure this exists in your project
+        if (ActiveInventory.Instance != null)
+        {
+            ActiveInventory.Instance.EquipStartingWeapon();
+        }
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         playerControls.Enable();
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         playerControls.Disable();
     }
 
-    private void Update() {
+    private void Update()
+    {
         PlayerInput();
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         AdjustPlayerFacingDirection();
         Move();
     }
 
-    public Transform GetWeaponCollider() {
+    public Transform GetWeaponCollider()
+    {
         return weaponCollider;
     }
 
-    private void PlayerInput() {
+    private void PlayerInput()
+    {
         movement = playerControls.Movement.Move.ReadValue<Vector2>();
 
-        myAnimator.SetFloat("moveX", movement.x);
-        myAnimator.SetFloat("moveY", movement.y);
+        if (myAnimator != null)
+        {
+            myAnimator.SetFloat("moveX", movement.x);
+            myAnimator.SetFloat("moveY", movement.y);
+        }
     }
 
-    private void Move() {
-        if (knockback.GettingKnockedBack || PlayerHealth.Instance.isDead) { return; }
+    private void Move()
+    {
+        if ((knockback != null && knockback.GettingKnockedBack) || 
+            (PlayerHealth.Instance != null && PlayerHealth.Instance.isDead))
+        {
+            return;
+        }
 
         rb.MovePosition(rb.position + movement * (moveSpeed * Time.fixedDeltaTime));
     }
 
-    private void AdjustPlayerFacingDirection() {
-        Vector3 mousePos = Input.mousePosition;
-        Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
+   private void AdjustPlayerFacingDirection()
+{
+    if (Camera.main == null) return;
 
-        if (mousePos.x < playerScreenPoint.x) {
-            mySpriteRender.flipX = true;
-            facingLeft = true;
-        } else {
-            mySpriteRender.flipX = false;
-            facingLeft = false;
-        }
+    Vector2 mousePos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+    Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
+
+    if (mousePos.x < playerScreenPoint.x)
+    {
+        mySpriteRender.flipX = true;
+        facingLeft = true;
     }
+    else
+    {
+        mySpriteRender.flipX = false;
+        facingLeft = false;
+    }
+}
 
-    private void Dash() {
-        if (!isDashing && Stamina.Instance.CurrentStamina > 0) {
+
+    private void Dash()
+    {
+        if (!isDashing && Stamina.Instance != null && Stamina.Instance.CurrentStamina > 0)
+        {
             Stamina.Instance.UseStamina();
             isDashing = true;
             moveSpeed *= dashSpeed;
-            myTrailRenderer.emitting = true;
+
+            if (myTrailRenderer != null)
+                myTrailRenderer.emitting = true;
+
             StartCoroutine(EndDashRoutine());
         }
     }
 
-    private IEnumerator EndDashRoutine() {
-        float dashTime = .2f;
-        float dashCD = .25f;
+    private IEnumerator EndDashRoutine()
+    {
+        float dashTime = 0.2f;
+        float dashCD = 0.25f;
+
         yield return new WaitForSeconds(dashTime);
+
         moveSpeed = startingMoveSpeed;
-        myTrailRenderer.emitting = false;
+
+        if (myTrailRenderer != null)
+            myTrailRenderer.emitting = false;
+
         yield return new WaitForSeconds(dashCD);
+
         isDashing = false;
     }
 }

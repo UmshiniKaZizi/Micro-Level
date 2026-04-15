@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shooter : MonoBehaviour, IEnemy
+public class Shooter : MonoBehaviour//, IEnemy
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletMoveSpeed;
@@ -30,13 +30,13 @@ public class Shooter : MonoBehaviour, IEnemy
         if (bulletMoveSpeed <= 0) { bulletMoveSpeed = 0.1f; }
     }
 
-    public void Attack() {
+  /*  public void Attack() {
         if (!isShooting) {
             StartCoroutine(ShootRoutine());
         }
-    }
+    }*/
 
-    private IEnumerator ShootRoutine()
+   /* private IEnumerator ShootRoutine()
     {
         isShooting = true;
 
@@ -90,7 +90,7 @@ public class Shooter : MonoBehaviour, IEnemy
         isShooting = false;
     }
 
-    private void TargetConeOfInfluence(out float startAngle, out float currentAngle, out float angleStep, out float endAngle)
+    /*private void TargetConeOfInfluence(out float startAngle, out float currentAngle, out float angleStep, out float endAngle)
     {
         Vector2 targetDirection = PlayerController.Instance.transform.position - transform.position;
         float targetAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
@@ -107,7 +107,7 @@ public class Shooter : MonoBehaviour, IEnemy
             endAngle = targetAngle + halfAngleSpread;
             currentAngle = startAngle;
         }
-    }
+    }*/
 
     private Vector2 FindBulletSpawnPos(float currentAngle) {
         float x = transform.position.x + startingDistance * Mathf.Cos(currentAngle * Mathf.Deg2Rad);

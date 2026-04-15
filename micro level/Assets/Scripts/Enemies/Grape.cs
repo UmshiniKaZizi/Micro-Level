@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grape : MonoBehaviour, IEnemy
+public class Grape : MonoBehaviour//, //IEnemy
 {
     [SerializeField] private GameObject grapeProjectilePrefab;
 
@@ -16,7 +16,7 @@ public class Grape : MonoBehaviour, IEnemy
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Attack() {
+   /* public void Attack() {
         myAnimator.SetTrigger(ATTACK_HASH);
 
         if (transform.position.x - PlayerController.Instance.transform.position.x < 0) {
@@ -24,7 +24,7 @@ public class Grape : MonoBehaviour, IEnemy
         } else {
             spriteRenderer.flipX = true;
         }
-    }
+    }*/
 
     public void SpawnProjectileAnimEvent() {
         Instantiate(grapeProjectilePrefab, transform.position, Quaternion.identity);

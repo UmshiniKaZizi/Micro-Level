@@ -19,7 +19,7 @@ public class Sword : MonoBehaviour, IWeapon
     }
 
     private void Start() {
-        weaponCollider = PlayerController.Instance.GetWeaponCollider();
+       // weaponCollider = PlayerController.Instance.GetWeaponCollider();
         slashAnimSpawnPoint = GameObject.Find("SlashSpawnPoint").transform;
     }
 
@@ -46,23 +46,23 @@ public class Sword : MonoBehaviour, IWeapon
     public void SwingUpFlipAnimEvent() {
         slashAnim.gameObject.transform.rotation = Quaternion.Euler(-180, 0, 0);
 
-        if (PlayerController.Instance.FacingLeft) { 
+       /* if (PlayerController.Instance.FacingLeft) { 
             slashAnim.GetComponent<SpriteRenderer>().flipX = true;
-        }
+        }*/
     }
 
     public void SwingDownFlipAnimEvent() {
         slashAnim.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        if (PlayerController.Instance.FacingLeft)
+       /* if (PlayerController.Instance.FacingLeft)
         {
             slashAnim.GetComponent<SpriteRenderer>().flipX = true;
-        }
+        }*/
     }
 
     private void MouseFollowWithOffset() {
         Vector3 mousePos = Input.mousePosition;
-        Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(PlayerController.Instance.transform.position);
+       /* Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(PlayerController.Instance.transform.position);
 
         float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
 
@@ -72,6 +72,6 @@ public class Sword : MonoBehaviour, IWeapon
         } else {
             ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, 0, angle);
             weaponCollider.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+        }*/
     }
 }
